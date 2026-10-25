@@ -4,6 +4,20 @@ An open-source, web-controlled 802.11 beacon frame broadcaster for ESP32. Broadc
 
 ---
 
+## ⚡ Quick 1-Click Install for Beginners (No Coding Required!)
+
+**Don't know how to code or don't have Arduino IDE installed? No problem!**
+
+1. Go to the **[Releases Page](https://github.com/randomchessmaster80-cmd/esp32-wifi-beacon-spammer/releases/latest)**.
+2. Download **`ESP32-WiFi-Spammer-v2.0-Standalone.zip`** and extract it.
+3. Plug your ESP32 into your computer via USB.
+4. Run the 1-click flasher:
+   - **Windows**: Double-click `flash_windows.bat`
+   - **Linux / macOS**: Run `./flash_linux_mac.sh`
+5. **Done!** Connect your phone to `ESP32-Spammer-Control` and open `http://192.168.4.1`!
+
+---
+
 ## ⚡ Features
 
 - **🌐 Web-Controlled Dashboard**: Connect to `ESP32-Spammer-Control` and open `http://192.168.4.1` on any phone or laptop.
@@ -26,7 +40,9 @@ An open-source, web-controlled 802.11 beacon frame broadcaster for ESP32. Broadc
 
 ---
 
-## 🚀 Installation & Flashing
+## 🚀 Advanced: Flashing from Source Code
+
+If you prefer building from source code:
 
 ### Option A: Using Arduino IDE
 1. Install the **ESP32 board package** in Arduino IDE (*Tools → Board Manager → esp32*).

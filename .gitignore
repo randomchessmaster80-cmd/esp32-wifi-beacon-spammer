@@ -1,5 +1,9 @@
+package/
+standalone_package/
+*.zip
 build/
 *.bin
 *.elf
+*.map
 *.o
 .vscode/
