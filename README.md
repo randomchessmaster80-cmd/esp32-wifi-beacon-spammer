@@ -18,6 +18,31 @@ An open-source, web-controlled 802.11 beacon frame broadcaster for ESP32. Broadc
 
 ---
 
+## 📱 Flashing from a Phone (No PC or Laptop Needed!)
+
+You can flash this project directly using just an **Android smartphone**!
+
+### What you need:
+- An **Android phone**
+- A **USB OTG adapter** (Type-C to USB adapter to plug the ESP32 into your phone)
+- The pre-compiled binary file: **[`esp32_wifi_spammer_v2.ino.merged.bin`](https://github.com/randomchessmaster80-cmd/esp32-wifi-beacon-spammer/releases/latest/download/esp32_wifi_spammer_v2.ino.merged.bin)**
+
+### Method 1: Using Chrome on your Phone (Zero Apps Required)
+1. Plug your ESP32 into your phone using the **OTG adapter**.
+2. Open **Google Chrome** on your Android phone and go to:  
+   👉 **[espressif.github.io/esptool-js](https://espressif.github.io/esptool-js/)**
+3. Tap **Connect** and select your connected ESP32 / USB serial device.
+4. Under **Flash Address**, enter `0x0`.
+5. Select the downloaded **`esp32_wifi_spammer_v2.ino.merged.bin`** file.
+6. Tap **Program**! Once complete, your ESP32 is flashed and ready!
+
+### Method 2: Using an Android App
+1. Download a free ESP flasher app from Google Play Store (such as **ESP32 Flasher** or **Serial USB Terminal**).
+2. Connect your ESP32 via USB OTG.
+3. Load the downloaded `.bin` file at address `0x0` and tap **Flash**.
+
+---
+
 ## ⚡ Features
 
 - **🌐 Web-Controlled Dashboard**: Connect to `ESP32-Spammer-Control` and open `http://192.168.4.1` on any phone or laptop.
@@ -40,7 +65,7 @@ An open-source, web-controlled 802.11 beacon frame broadcaster for ESP32. Broadc
 
 ---
 
-## 🚀 Advanced: Flashing from Source Code
+## 🚀 Advanced: Flashing from Source Code (PC)
 
 If you prefer building from source code:
 
