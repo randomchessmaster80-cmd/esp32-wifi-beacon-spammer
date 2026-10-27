@@ -4,23 +4,24 @@ An open-source, web-controlled 802.11 beacon frame broadcaster for ESP32. Broadc
 
 ---
 
-## 🚀 1-Click Flash from Your Browser (Easiest Method — No Code / No Downloads!)
+## 🛠️ ESP32 Web Tools & In-Browser Suite (No Downloads / Zero Code!)
 
-> **Zero setup required!** You don't need Python, Arduino IDE, or any drivers. You can flash your ESP32 directly from your web browser (Chrome, Edge, Brave, or Android Chrome) in under 30 seconds:
+> **Zero setup required!** You don't need Python, Arduino IDE, or drivers. Access our complete in-browser ESP32 toolbox directly from **Google Chrome**, **Microsoft Edge**, or **Brave**:
 
 <div align="center">
 
-### 👉 **[CLICK HERE TO OPEN THE 1-CLICK WEB INSTALLER](https://randomchessmaster80-cmd.github.io/esp32-wifi-beacon-spammer/)** 👈
+### 👉 **[LAUNCH THE ESP32 WEB TOOLS & FLASHER SUITE](https://randomchessmaster80-cmd.github.io/esp32-wifi-beacon-spammer/)** 👈
 
-[![Flash with ESP Web Tools](https://img.shields.io/badge/⚡_FLASH_DIRECTLY_FROM_BROWSER-CLICK_HERE-00ffcc?style=for-the-badge&logo=espressif&logoColor=black)](https://randomchessmaster80-cmd.github.io/esp32-wifi-beacon-spammer/)
+[![Launch ESP32 Web Tools](https://img.shields.io/badge/🛠️_LAUNCH_ESP32_WEB_TOOLS-CLICK_HERE-00ffcc?style=for-the-badge&logo=espressif&logoColor=black)](https://randomchessmaster80-cmd.github.io/esp32-wifi-beacon-spammer/)
 
 </div>
 
-### How to use the Web Installer:
-1. Plug your **ESP32** into your computer (or Android phone) via USB.
-2. Open the **[Web Installer](https://randomchessmaster80-cmd.github.io/esp32-wifi-beacon-spammer/)** in **Google Chrome**, **Microsoft Edge**, or **Brave**.
-3. Click **⚡ CONNECT & FLASH ESP32**, choose your ESP32's USB serial port, and wait ~20 seconds for the progress bar to hit 100%!
-4. **Done!** Connect your phone to `ESP32-Spammer-Control` and open `http://192.168.4.1`!
+### Included Web Tools:
+* ⚡ **1-Click Firmware Flasher**: Instantly flashes the Spammer V2 firmware with progress bar.
+* 🗑️ **Factory Erase Flash Tool**: 1-click full chip memory wipe to factory blank (`0xFF`).
+* 📟 **Live Web Serial Monitor**: Stream real-time serial logs, view boot output, and send serial commands.
+* 🔍 **Chip Diagnostics & Inspector**: Real-time hardware detection of chip model, revision, MAC address, and flash ID.
+* 🌐 **Airwave Control Shortcut**: Quick launcher and connection instructions for `http://192.168.4.1`.
 
 ---
 

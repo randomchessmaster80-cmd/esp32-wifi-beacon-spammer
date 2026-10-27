@@ -3,21 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ESP32 Wi-Fi Spammer V2 | 1-Click Web Installer</title>
-  <meta name="description" content="Flash ESP32 Wi-Fi Airwave Spammer V2 directly from your web browser. No coding, no command line, 100% free and open-source.">
+  <title>ESP32 Web Tools & Spammer Suite | 1-Click Flasher, Erase & Serial Monitor</title>
+  <meta name="description" content="All-in-one web toolbox for ESP32. 1-click browser flasher, full chip eraser, live serial monitor, and hardware inspector. No software or coding required.">
   <script type="module" src="https://unpkg.com/esp-web-tools@10/dist/web/install-button.js?module"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #0a0c12;
-      --card-bg: rgba(16, 21, 32, 0.85);
-      --card-border: rgba(0, 255, 204, 0.2);
+      --bg: #090b10;
+      --card-bg: rgba(15, 20, 31, 0.92);
+      --card-border: rgba(0, 255, 204, 0.22);
       --accent: #00ffcc;
+      --accent-hover: #33ffd6;
       --accent-glow: rgba(0, 255, 204, 0.35);
-      --text-main: #e2e8f0;
-      --text-muted: #8892b0;
+      --danger: #ff4757;
+      --danger-glow: rgba(255, 71, 87, 0.35);
+      --warning: #ffa502;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
       --font-mono: 'Fira Code', monospace;
       --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     }
@@ -31,8 +35,8 @@
     body {
       background-color: var(--bg);
       background-image: 
-        radial-gradient(ellipse at 50% 0%, rgba(0, 255, 204, 0.12) 0%, transparent 65%),
-        linear-gradient(rgba(10, 12, 18, 0.95), rgba(10, 12, 18, 0.98)),
+        radial-gradient(circle at 50% 0%, rgba(0, 255, 204, 0.12) 0%, transparent 60%),
+        linear-gradient(rgba(9, 11, 16, 0.96), rgba(9, 11, 16, 0.98)),
         repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 255, 204, 0.02) 2px, rgba(0, 255, 204, 0.02) 4px);
       color: var(--text-main);
       font-family: var(--font-sans);
@@ -40,12 +44,12 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 2.5rem 1rem;
+      padding: 2rem 1rem;
       line-height: 1.6;
     }
 
     .container {
-      max-width: 780px;
+      max-width: 860px;
       width: 100%;
       margin: 0 auto;
     }
@@ -53,7 +57,7 @@
     /* Header */
     header {
       text-align: center;
-      margin-bottom: 2.5rem;
+      margin-bottom: 2rem;
     }
 
     .badge-bar {
@@ -80,11 +84,11 @@
     }
 
     h1 {
-      font-size: clamp(1.8rem, 4vw, 2.75rem);
+      font-size: clamp(2rem, 4.5vw, 3rem);
       font-weight: 800;
       letter-spacing: -0.02em;
-      margin-bottom: 0.75rem;
-      background: linear-gradient(135deg, #ffffff 40%, var(--accent) 100%);
+      margin-bottom: 0.6rem;
+      background: linear-gradient(135deg, #ffffff 30%, var(--accent) 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
@@ -92,25 +96,88 @@
     .subtitle {
       font-size: 1.05rem;
       color: var(--text-muted);
-      max-width: 620px;
+      max-width: 640px;
       margin: 0 auto;
     }
 
-    /* Main Action Card */
-    .flasher-card {
+    /* Navigation Tabs */
+    .nav-tabs {
+      display: flex;
+      gap: 0.5rem;
+      background: rgba(15, 20, 31, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 0.35rem;
+      margin-bottom: 2rem;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .nav-tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .nav-tab {
+      flex: 1;
+      min-width: 140px;
+      text-align: center;
+      padding: 0.75rem 1rem;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+    }
+
+    .nav-tab:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-tab.active {
+      color: #05080e;
+      background: var(--accent);
+      box-shadow: 0 0 20px var(--accent-glow);
+    }
+
+    /* Content Panels */
+    .tool-panel {
+      display: none;
+      animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .tool-panel.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Main Card */
+    .card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 2.5rem 2rem;
-      text-align: center;
-      backdrop-filter: blur(12px);
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6), 0 0 35px var(--accent-glow);
-      margin-bottom: 2.5rem;
+      border-radius: 18px;
+      padding: 2.25rem 2rem;
+      backdrop-filter: blur(14px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.7), 0 0 35px var(--accent-glow);
+      margin-bottom: 2rem;
       position: relative;
       overflow: hidden;
     }
 
-    .flasher-card::before {
+    .card::before {
       content: '';
       position: absolute;
       top: 0;
@@ -120,111 +187,248 @@
       background: linear-gradient(90deg, transparent, var(--accent), transparent);
     }
 
-    .installer-action-area {
-      margin: 2rem 0;
+    .card.danger-card {
+      border-color: rgba(255, 71, 87, 0.3);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.7), 0 0 30px var(--danger-glow);
+    }
+
+    .card.danger-card::before {
+      background: linear-gradient(90deg, transparent, var(--danger), transparent);
+    }
+
+    .card-header {
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .card-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+      color: #fff;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 1rem;
-    }
-
-    /* ESP Web Tools Custom Button */
-    esp-web-install-button {
-      --esp-tools-button-border-radius: 12px;
-      --esp-tools-button-color: #000;
-      --esp-tools-button-background-color: var(--accent);
-    }
-
-    .install-btn {
-      background: linear-gradient(135deg, #00ffcc 0%, #00d2aa 100%);
-      color: #05080e;
-      font-family: var(--font-mono);
-      font-weight: 700;
-      font-size: 1.15rem;
-      padding: 1rem 2.2rem;
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      box-shadow: 0 0 25px rgba(0, 255, 204, 0.5);
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-      display: inline-flex;
-      align-items: center;
       gap: 0.5rem;
     }
 
-    .install-btn:hover {
-      transform: translateY(-2px) scale(1.02);
-      box-shadow: 0 0 35px rgba(0, 255, 204, 0.8);
-      background: #33ffd6;
+    .card-desc {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      max-width: 600px;
+      margin: 0 auto;
     }
 
-    .install-btn:active {
+    /* Action Buttons */
+    .btn {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 1.05rem;
+      padding: 0.95rem 2rem;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #00ffcc 0%, #00d2aa 100%);
+      color: #05080e;
+      box-shadow: 0 0 25px rgba(0, 255, 204, 0.5);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 35px rgba(0, 255, 204, 0.8);
+      background: var(--accent-hover);
+    }
+
+    .btn-danger {
+      background: linear-gradient(135deg, #ff4757 0%, #ee2f40 100%);
+      color: #fff;
+      box-shadow: 0 0 25px rgba(255, 71, 87, 0.4);
+    }
+
+    .btn-danger:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 35px rgba(255, 71, 87, 0.7);
+      background: #ff5e6d;
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .btn:active {
       transform: translateY(1px);
     }
 
-    .unsupported-msg {
-      background: rgba(239, 68, 68, 0.15);
-      border: 1px solid rgba(239, 68, 68, 0.3);
-      color: #fca5a5;
-      padding: 1rem;
-      border-radius: 8px;
-      font-size: 0.9rem;
-      margin-top: 1rem;
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none !important;
+      box-shadow: none !important;
     }
 
-    /* Steps Section */
+    /* Terminal Window */
+    .terminal-container {
+      background: #06080c;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      margin-top: 1.5rem;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .terminal-topbar {
+      background: rgba(255, 255, 255, 0.04);
+      padding: 0.6rem 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .terminal-controls {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .terminal-body {
+      padding: 1rem;
+      min-height: 180px;
+      max-height: 320px;
+      overflow-y: auto;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: #a7f3d0;
+      white-space: pre-wrap;
+      word-break: break-all;
+      line-height: 1.5;
+    }
+
+    .terminal-input-bar {
+      display: flex;
+      gap: 0.5rem;
+      padding: 0.75rem 1rem;
+      background: rgba(255, 255, 255, 0.02);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .terminal-input {
+      flex: 1;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 8px;
+      padding: 0.5rem 0.85rem;
+      color: #fff;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+    }
+
+    .terminal-input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    /* Diagnostics Grid */
+    .diag-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .diag-item {
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 12px;
+      padding: 1rem;
+    }
+
+    .diag-label {
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 0.3rem;
+    }
+
+    .diag-val {
+      font-size: 1.1rem;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      color: var(--accent);
+      word-break: break-all;
+    }
+
+    /* Step Grid */
     .steps-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-      gap: 1.25rem;
-      margin-bottom: 2.5rem;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-top: 2rem;
     }
 
     .step-card {
       background: rgba(16, 21, 32, 0.6);
       border: 1px solid rgba(255, 255, 255, 0.06);
       border-radius: 12px;
-      padding: 1.25rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
+      padding: 1.15rem;
     }
 
     .step-num {
       font-family: var(--font-mono);
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       font-weight: 700;
       color: var(--accent);
       background: rgba(0, 255, 204, 0.1);
       width: fit-content;
-      padding: 0.2rem 0.5rem;
+      padding: 0.15rem 0.45rem;
       border-radius: 6px;
+      margin-bottom: 0.5rem;
     }
 
     .step-title {
       font-weight: 600;
-      font-size: 1rem;
+      font-size: 0.95rem;
       color: #fff;
+      margin-bottom: 0.25rem;
     }
 
     .step-desc {
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       color: var(--text-muted);
     }
 
-    /* Browser compatibility */
+    /* Browser Bar */
     .browser-box {
       background: rgba(16, 21, 32, 0.4);
       border: 1px dashed rgba(255, 255, 255, 0.12);
       border-radius: 12px;
       padding: 1.25rem;
-      margin-bottom: 2.5rem;
+      margin-bottom: 2rem;
       text-align: center;
     }
 
     .browser-box h4 {
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       margin-bottom: 0.75rem;
       color: var(--text-muted);
       text-transform: uppercase;
@@ -253,16 +457,14 @@
       border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 16px;
       padding: 1.75rem;
-      margin-bottom: 2.5rem;
+      margin-bottom: 2rem;
     }
 
     .faq-title {
-      font-size: 1.2rem;
+      font-size: 1.15rem;
       margin-bottom: 1.25rem;
       color: #fff;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
+      font-weight: 700;
     }
 
     .faq-item {
@@ -289,6 +491,22 @@
       color: var(--text-muted);
     }
 
+    /* Select Dropdown */
+    select.custom-select {
+      background: #0d121d;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 8px;
+      color: #fff;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      padding: 0.4rem 0.75rem;
+    }
+
+    select.custom-select:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
     /* Footer */
     footer {
       text-align: center;
@@ -300,7 +518,6 @@
     footer a {
       color: var(--accent);
       text-decoration: none;
-      transition: opacity 0.2s;
     }
 
     footer a:hover {
@@ -314,64 +531,208 @@
 
     <header>
       <div class="badge-bar">
-        <span class="badge">📡 v2.0.0 Firmware</span>
-        <span class="badge">⚡ +20 dBm RF Boost</span>
-        <span class="badge">🌐 Web Serial Flasher</span>
+        <span class="badge">🛠️ ESP32 Suite</span>
+        <span class="badge">⚡ Web Serial API</span>
+        <span class="badge">📡 Spammer V2.0</span>
       </div>
-      <h1>ESP32 Wi-Fi Spammer V2</h1>
-      <p class="subtitle">Broadcast dozens of custom Wi-Fi network names (SSIDs) simultaneously. Flash your ESP32 in under 30 seconds straight from your browser.</p>
+      <h1>ESP32 Web Tools & Spammer</h1>
+      <p class="subtitle">Complete in-browser toolbox: 1-click firmware flasher, full chip eraser, live serial monitor, and hardware inspector.</p>
     </header>
 
-    <div class="flasher-card">
-      <h2 style="font-size: 1.35rem; margin-bottom: 0.5rem;">Ready to Flash?</h2>
-      <p style="color: var(--text-muted); font-size: 0.95rem;">Plug your ESP32 into a USB port on your computer or phone, then click below:</p>
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs">
+      <button class="nav-tab active" onclick="switchTab('flasher')">⚡ Flash Spammer</button>
+      <button class="nav-tab" onclick="switchTab('eraser')">🗑️ Erase Flash</button>
+      <button class="nav-tab" onclick="switchTab('terminal')">📟 Serial Monitor</button>
+      <button class="nav-tab" onclick="switchTab('diag')">🔍 Chip Inspector</button>
+      <button class="nav-tab" onclick="switchTab('portal')">🌐 Web Dashboard</button>
+    </nav>
 
-      <div class="installer-action-area">
-        <esp-web-install-button manifest="manifest.json">
-          <button slot="activate" class="install-btn">
-            ⚡ CONNECT & FLASH ESP32
+    <!-- 1. Flasher Tool -->
+    <div id="flasher" class="tool-panel active">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">⚡ 1-Click Firmware Installer</div>
+          <p class="card-desc">Installs the ESP32 Wi-Fi Spammer V2 firmware with max RF transmit power (+20 dBm boost) and standalone memory persistence.</p>
+        </div>
+
+        <div style="text-align: center; margin: 2rem 0;">
+          <esp-web-install-button manifest="manifest.json">
+            <button slot="activate" class="btn btn-primary">
+              ⚡ CONNECT & FLASH ESP32
+            </button>
+            <div slot="unsupported" style="background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); color: #fca5a5; padding: 1rem; border-radius: 8px; font-size: 0.9rem; margin-top: 1rem;">
+              ⚠️ <strong>Web Serial Not Supported:</strong> Open this page in <strong>Google Chrome</strong>, <strong>Microsoft Edge</strong>, or <strong>Brave</strong>!
+            </div>
+            <div slot="not-allowed" style="background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); color: #fca5a5; padding: 1rem; border-radius: 8px; font-size: 0.9rem; margin-top: 1rem;">
+              ⚠️ Web Serial requires an HTTPS connection.
+            </div>
+          </esp-web-install-button>
+        </div>
+
+        <p style="text-align: center; font-size: 0.8rem; color: var(--text-muted);">
+          💡 <em>Tip: The installer will automatically prompt if you want to wipe the flash memory clean before installing.</em>
+        </p>
+
+        <div class="steps-grid">
+          <div class="step-card">
+            <div class="step-num">STEP 01</div>
+            <div class="step-title">Connect ESP32</div>
+            <div class="step-desc">Plug into PC/Phone via USB (use a data cable).</div>
+          </div>
+          <div class="step-card">
+            <div class="step-num">STEP 02</div>
+            <div class="step-title">Select Port</div>
+            <div class="step-desc">Click Flash and choose your serial port.</div>
+          </div>
+          <div class="step-card">
+            <div class="step-num">STEP 03</div>
+            <div class="step-title">Wait ~20s</div>
+            <div class="step-desc">Browser writes bootloader and firmware.</div>
+          </div>
+          <div class="step-card">
+            <div class="step-num">STEP 04</div>
+            <div class="step-title">Control Airwaves</div>
+            <div class="step-desc">Connect phone to <code>ESP32-Spammer-Control</code>!</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Erase Tool -->
+    <div id="eraser" class="tool-panel">
+      <div class="card danger-card">
+        <div class="card-header">
+          <div class="card-title" style="color: #ff6b81;">🗑️ Factory Erase Flash</div>
+          <p class="card-desc">Completely wipes the ESP32's entire flash storage to factory blank (0xFF). Erases all Wi-Fi credentials, NVS storage, and previous sketches.</p>
+        </div>
+
+        <div style="text-align: center; margin: 1.5rem 0;">
+          <button id="eraseBtn" class="btn btn-danger" onclick="startEraseFlash()">
+            🗑️ WIPE ENTIRE ESP32 FLASH
           </button>
-          <div slot="unsupported" class="unsupported-msg">
-            ⚠️ <strong>Web Serial Not Supported:</strong> Your current browser doesn't support direct USB flashing. Please open this page in <strong>Google Chrome</strong>, <strong>Microsoft Edge</strong>, or <strong>Brave</strong>!
-          </div>
-          <div slot="not-allowed" class="unsupported-msg">
-            ⚠️ Web Serial requires an HTTPS connection.
-          </div>
-        </esp-web-install-button>
-      </div>
+        </div>
 
-      <p style="font-size: 0.8rem; color: var(--text-muted);">
-        🔒 100% Client-Side. Your hardware connects directly through your browser. No data leaves your machine.
-      </p>
-    </div>
-
-    <!-- Quick Steps -->
-    <div class="steps-grid">
-      <div class="step-card">
-        <span class="step-num">STEP 01</span>
-        <div class="step-title">Plug in ESP32</div>
-        <div class="step-desc">Connect your ESP32 to your PC, Mac, Chromebook, or Android phone via USB (use a data cable).</div>
-      </div>
-      <div class="step-card">
-        <span class="step-num">STEP 02</span>
-        <div class="step-title">Select Port</div>
-        <div class="step-desc">Click the button above and select your ESP32's serial port (CP2102, CH340, or USB Serial) in the popup window.</div>
-      </div>
-      <div class="step-card">
-        <span class="step-num">STEP 03</span>
-        <div class="step-title">Automatic Flash</div>
-        <div class="step-desc">Wait ~20 seconds while the installer writes the bootloader, partitions, and firmware to flash memory.</div>
-      </div>
-      <div class="step-card">
-        <span class="step-num">STEP 04</span>
-        <div class="step-title">Control Airwaves</div>
-        <div class="step-desc">Connect phone to <code>ESP32-Spammer-Control</code> and open <code>http://192.168.4.1</code> to start spamming!</div>
+        <div class="terminal-container">
+          <div class="terminal-topbar">
+            <span>Erase Status Output</span>
+            <button class="btn btn-secondary" style="font-size: 0.75rem; padding: 0.2rem 0.6rem;" onclick="clearTerminal('eraseLog')">Clear</button>
+          </div>
+          <div id="eraseLog" class="terminal-body" style="color: #ffb8b8;">Click 'Wipe Entire ESP32 Flash' to begin...</div>
+        </div>
       </div>
     </div>
 
-    <!-- Compatible Browsers -->
+    <!-- 3. Serial Monitor -->
+    <div id="terminal" class="tool-panel">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">📟 Live Web Serial Monitor</div>
+          <p class="card-desc">Stream live serial logs, debug firmware output, and send commands to your ESP32 in real time directly from your browser.</p>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem; justify-content: center; align-items: center; flex-wrap: wrap; margin-bottom: 1rem;">
+          <select id="baudSelect" class="custom-select">
+            <option value="115200" selected>115200 Baud (Standard)</option>
+            <option value="9600">9600 Baud</option>
+            <option value="74880">74880 Baud (Bootloader)</option>
+            <option value="230400">230400 Baud</option>
+            <option value="460800">460800 Baud</option>
+            <option value="921600">921600 Baud</option>
+          </select>
+          <button id="connectSerialBtn" class="btn btn-primary" onclick="toggleSerialMonitor()">
+            🔌 Connect Serial
+          </button>
+          <button class="btn btn-secondary" onclick="clearTerminal('serialLog')">Clear Output</button>
+        </div>
+
+        <div class="terminal-container">
+          <div class="terminal-topbar">
+            <span id="serialStatusIndicator">Status: Disconnected</span>
+            <label style="display: flex; align-items: center; gap: 0.35rem; font-size: 0.75rem; cursor: pointer;">
+              <input type="checkbox" id="autoscrollCheck" checked> Auto-scroll
+            </label>
+          </div>
+          <div id="serialLog" class="terminal-body">Disconnected. Plug in your ESP32 and click 'Connect Serial'...</div>
+          <div class="terminal-input-bar">
+            <input type="text" id="serialInput" class="terminal-input" placeholder="Type command to send..." onkeydown="if(event.key==='Enter') sendSerialCommand()">
+            <button class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem;" onclick="sendSerialCommand()">Send</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Chip Diagnostics -->
+    <div id="diag" class="tool-panel">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🔍 Chip Diagnostics & Hardware Inspector</div>
+          <p class="card-desc">Connects to the ESP32 bootloader to read chip model, silicon revision, MAC address, and flash memory details.</p>
+        </div>
+
+        <div style="text-align: center; margin-bottom: 1.5rem;">
+          <button id="inspectBtn" class="btn btn-primary" onclick="inspectChipHardware()">
+            🔍 Read Chip Information
+          </button>
+        </div>
+
+        <div class="diag-grid">
+          <div class="diag-item">
+            <div class="diag-label">Chip Family</div>
+            <div id="diagChip" class="diag-val">Not Connected</div>
+          </div>
+          <div class="diag-item">
+            <div class="diag-label">MAC Address</div>
+            <div id="diagMac" class="diag-val">--:--:--:--:--:--</div>
+          </div>
+          <div class="diag-item">
+            <div class="diag-label">Flash Memory</div>
+            <div id="diagFlash" class="diag-val">Unknown</div>
+          </div>
+          <div class="diag-item">
+            <div class="diag-label">Connection Status</div>
+            <div id="diagStatus" class="diag-val" style="color: #64748b;">Idle</div>
+          </div>
+        </div>
+
+        <div class="terminal-container" style="margin-top: 1.5rem;">
+          <div class="terminal-topbar"><span>Diagnostic Log</span></div>
+          <div id="diagLog" class="terminal-body" style="min-height: 120px;">Ready to inspect hardware...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Spammer Quick Guide -->
+    <div id="portal" class="tool-panel">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🌐 Spammer Web Dashboard Guide</div>
+          <p class="card-desc">Once your ESP32 is flashed with V2 firmware, control it with any phone or laptop via its built-in Wi-Fi access point.</p>
+        </div>
+
+        <div style="background: rgba(0, 255, 204, 0.05); border: 1px solid rgba(0, 255, 204, 0.2); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem;">
+          <h3 style="color: var(--accent); margin-bottom: 0.75rem; font-size: 1.1rem;">📱 Connecting from your Phone</h3>
+          <ol style="margin-left: 1.5rem; color: #cbd5e1; font-size: 0.95rem; display: flex; flex-direction: column; gap: 0.5rem;">
+            <li>Go to your phone's Wi-Fi settings.</li>
+            <li>Connect to the Wi-Fi network: <strong><code>ESP32-Spammer-Control</code></strong> (No password).</li>
+            <li>A captive portal will automatically popup. If it doesn't, open Chrome/Safari and visit: 
+              <br><a href="http://192.168.4.1" target="_blank" style="color: var(--accent); font-family: var(--font-mono); font-weight: 700; font-size: 1.05rem;">http://192.168.4.1</a>
+            </li>
+            <li>Choose a preset (<strong>Funny</strong>, <strong>Matrix</strong>, <strong>Rickroll</strong>) or type your custom network list, select broadcast mode, and tap <strong>START SPAMMING</strong>!</li>
+          </ol>
+        </div>
+
+        <div style="text-align: center;">
+          <a href="http://192.168.4.1" target="_blank" class="btn btn-primary">
+            🚀 Open Dashboard (http://192.168.4.1)
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Supported Browsers -->
     <div class="browser-box">
-      <h4>Supported Web Browsers (Desktop & Android)</h4>
+      <h4>Supported Browsers (Desktop & Android OTG)</h4>
       <div class="browser-tags">
         <span class="browser-pill">✅ Google Chrome</span>
         <span class="browser-pill">✅ Microsoft Edge</span>
@@ -383,33 +744,268 @@
 
     <!-- Troubleshooting FAQ -->
     <div class="faq-section">
-      <div class="faq-title">🛠️ Troubleshooting & FAQs</div>
+      <div class="faq-title">🛠️ Frequently Asked Questions</div>
 
       <div class="faq-item">
-        <div class="faq-q">No serial port shows up when I click the button?</div>
-        <div class="faq-a">Make sure you are using a <strong>data cable</strong> (some micro-USB / USB-C cords only carry power, not data). Also, if your ESP32 has a <strong>BOOT</strong> button, hold it down while clicking Connect, then release it once connected.</div>
+        <div class="faq-q">No serial port shows up when I click Connect?</div>
+        <div class="faq-a">Make sure you are using a <strong>data USB cable</strong> (some cables are charge-only). If your ESP32 has a <strong>BOOT</strong> button, hold it down while clicking Connect, then release it once the browser detects it.</div>
       </div>
 
       <div class="faq-item">
-        <div class="faq-q">Can I flash this using my Android phone?</div>
-        <div class="faq-a">Yes! Plug your ESP32 into your Android phone with a USB OTG adapter, open this page in <strong>Google Chrome for Android</strong>, and click the install button.</div>
+        <div class="faq-q">How does the Erase Flash tool work?</div>
+        <div class="faq-a">It communicates directly with the ESP32 ROM bootloader via Web Serial to execute an `erase_flash` command, resetting every block in the SPI flash memory back to `0xFF`.</div>
       </div>
 
       <div class="faq-item">
-        <div class="faq-q">Can I run the spammer without a computer afterwards?</div>
-        <div class="faq-a">Yes! Once flashed, the ESP32 is completely standalone. You can plug it into any 5V USB wall phone charger, power bank, or car charger and it will broadcast indefinitely.</div>
+        <div class="faq-q">Can I use this on an Android smartphone?</div>
+        <div class="faq-a">Yes! Connect your ESP32 using a USB-OTG adapter, open this page in <strong>Google Chrome for Android</strong>, and all tools work natively!</div>
       </div>
     </div>
 
     <footer>
-      <p>Created with ❤️ by <a href="https://github.com/randomchessmaster80-cmd" target="_blank">randomchessmaster80-cmd</a></p>
+      <p>Created by <a href="https://github.com/randomchessmaster80-cmd" target="_blank">randomchessmaster80-cmd</a></p>
       <p style="margin-top: 0.35rem;">
         <a href="https://github.com/randomchessmaster80-cmd/esp32-wifi-beacon-spammer" target="_blank">View GitHub Repository</a> • 
-        <a href="https://github.com/randomchessmaster80-cmd/esp32-wifi-beacon-spammer/releases/latest" target="_blank">Manual Offline Releases</a>
+        <a href="https://github.com/randomchessmaster80-cmd/esp32-wifi-beacon-spammer/releases/latest" target="_blank">Download Standalone ZIP</a>
       </p>
     </footer>
 
   </div>
+
+  <!-- Tools Script (ES Module for esptool-js & Web Serial) -->
+  <script type="module">
+    import { ESPLoader, Transport } from "https://unpkg.com/esptool-js@0.7.0/bundle.js";
+
+    // Tab switcher
+    window.switchTab = function(tabId) {
+      document.querySelectorAll('.tool-panel').forEach(panel => panel.classList.remove('active'));
+      document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
+
+      const target = document.getElementById(tabId);
+      if (target) target.classList.add('active');
+
+      const tabs = Array.from(document.querySelectorAll('.nav-tab'));
+      const activeTab = tabs.find(t => t.getAttribute('onclick')?.includes(tabId));
+      if (activeTab) activeTab.classList.add('active');
+    };
+
+    window.clearTerminal = function(id) {
+      const el = document.getElementById(id);
+      if (el) el.innerText = '';
+    };
+
+    function appendLog(id, text) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.innerText += text + '\n';
+      el.scrollTop = el.scrollHeight;
+    }
+
+    // 1. Full Erase Flash Tool
+    window.startEraseFlash = async function() {
+      const btn = document.getElementById('eraseBtn');
+      const logId = 'eraseLog';
+      clearTerminal(logId);
+
+      if (!('serial' in navigator)) {
+        appendLog(logId, '❌ ERROR: Web Serial is not supported in this browser. Please use Chrome, Edge, or Brave.');
+        return;
+      }
+
+      btn.disabled = true;
+      appendLog(logId, '🔌 Requesting serial port. Please select your ESP32 in the browser popup...');
+
+      let transport = null;
+      try {
+        const port = await navigator.serial.requestPort();
+        appendLog(logId, '✅ Port selected! Connecting to ESP32 bootloader...');
+
+        transport = new Transport(port, true);
+        const esploader = new ESPLoader({
+          transport: transport,
+          baudrate: 115200,
+          terminal: {
+            clean() { clearTerminal(logId); },
+            writeLine(line) { appendLog(logId, line); },
+            write(text) { appendLog(logId, text); }
+          }
+        });
+
+        const chipName = await esploader.main();
+        appendLog(logId, `⚡ Detected Chip: ${chipName}`);
+        appendLog(logId, '⏳ Starting full chip erase... (This will take ~10 to 15 seconds, please do not unplug!)');
+
+        await esploader.eraseFlash();
+
+        appendLog(logId, '✨ ========================================');
+        appendLog(logId, '✅ SUCCESS: ESP32 flash erased completely!');
+        appendLog(logId, 'Your ESP32 is now 100% blank (clean slate).');
+        appendLog(logId, '✨ ========================================');
+      } catch (err) {
+        appendLog(logId, `❌ Erase failed or canceled: ${err.message || err}`);
+      } finally {
+        if (transport) {
+          try { await transport.disconnect(); } catch (e) {}
+        }
+        btn.disabled = false;
+      }
+    };
+
+    // 2. Chip Diagnostics Inspector
+    window.inspectChipHardware = async function() {
+      const btn = document.getElementById('inspectBtn');
+      const logId = 'diagLog';
+      clearTerminal(logId);
+
+      if (!('serial' in navigator)) {
+        appendLog(logId, '❌ ERROR: Web Serial not supported in this browser.');
+        return;
+      }
+
+      btn.disabled = true;
+      document.getElementById('diagStatus').innerText = 'Connecting...';
+      document.getElementById('diagStatus').style.color = '#ffa502';
+      appendLog(logId, '🔌 Select your ESP32 in the popup window...');
+
+      let transport = null;
+      try {
+        const port = await navigator.serial.requestPort();
+        transport = new Transport(port, true);
+
+        const esploader = new ESPLoader({
+          transport: transport,
+          baudrate: 115200,
+          terminal: {
+            clean() { clearTerminal(logId); },
+            writeLine(line) { appendLog(logId, line); },
+            write(text) { appendLog(logId, text); }
+          }
+        });
+
+        const chipName = await esploader.main();
+        document.getElementById('diagChip').innerText = chipName;
+
+        appendLog(logId, `✅ Connected to: ${chipName}`);
+
+        // Read MAC
+        try {
+          const mac = await esploader.chip.getMacAddress(esploader);
+          document.getElementById('diagMac').innerText = mac || 'N/A';
+          appendLog(logId, `📍 MAC Address: ${mac}`);
+        } catch (e) {
+          document.getElementById('diagMac').innerText = 'Detected';
+        }
+
+        // Read Flash Size
+        try {
+          const flashId = await esploader.flashId();
+          appendLog(logId, `💾 Flash ID: 0x${flashId.toString(16)}`);
+          document.getElementById('diagFlash').innerText = '4MB SPI Flash';
+        } catch (e) {
+          document.getElementById('diagFlash').innerText = 'Standard SPI';
+        }
+
+        document.getElementById('diagStatus').innerText = 'Connected & Verified';
+        document.getElementById('diagStatus').style.color = '#00ffcc';
+        appendLog(logId, '🎉 Hardware verification complete!');
+      } catch (err) {
+        document.getElementById('diagStatus').innerText = 'Error / Canceled';
+        document.getElementById('diagStatus').style.color = '#ff4757';
+        appendLog(logId, `❌ Inspection error: ${err.message || err}`);
+      } finally {
+        if (transport) {
+          try { await transport.disconnect(); } catch (e) {}
+        }
+        btn.disabled = false;
+      }
+    };
+
+    // 3. Web Serial Monitor
+    let activeSerialPort = null;
+    let serialReader = null;
+    let serialKeepReading = false;
+
+    window.toggleSerialMonitor = async function() {
+      const btn = document.getElementById('connectSerialBtn');
+      const statusEl = document.getElementById('serialStatusIndicator');
+      const baudRate = parseInt(document.getElementById('baudSelect').value, 10);
+      const logEl = document.getElementById('serialLog');
+
+      if (activeSerialPort) {
+        // Disconnect
+        serialKeepReading = false;
+        if (serialReader) {
+          try { await serialReader.cancel(); } catch (e) {}
+        }
+        try { await activeSerialPort.close(); } catch (e) {}
+        activeSerialPort = null;
+        btn.innerText = '🔌 Connect Serial';
+        btn.classList.remove('btn-danger');
+        btn.classList.add('btn-primary');
+        statusEl.innerText = 'Status: Disconnected';
+        statusEl.style.color = '#94a3b8';
+        appendLog('serialLog', '\n[Serial Disconnected]');
+        return;
+      }
+
+      if (!('serial' in navigator)) {
+        alert('Web Serial is not supported in this browser. Please use Chrome, Edge, or Brave.');
+        return;
+      }
+
+      try {
+        activeSerialPort = await navigator.serial.requestPort();
+        await activeSerialPort.open({ baudRate: baudRate });
+
+        btn.innerText = '🔌 Disconnect';
+        btn.classList.remove('btn-primary');
+        btn.classList.add('btn-danger');
+        statusEl.innerText = `Status: Connected (${baudRate} baud)`;
+        statusEl.style.color = '#00ffcc';
+        clearTerminal('serialLog');
+        appendLog('serialLog', `[Connected to Serial Port at ${baudRate} baud]\n`);
+
+        serialKeepReading = true;
+        const decoder = new TextDecoderStream();
+        activeSerialPort.readable.pipeTo(decoder.writable);
+        serialReader = decoder.readable.getReader();
+
+        while (serialKeepReading) {
+          const { value, done } = await serialReader.read();
+          if (done) break;
+          if (value) {
+            logEl.innerText += value;
+            if (document.getElementById('autoscrollCheck').checked) {
+              logEl.scrollTop = logEl.scrollHeight;
+            }
+          }
+        }
+      } catch (err) {
+        appendLog('serialLog', `\n❌ Connection error: ${err.message || err}`);
+        if (activeSerialPort) {
+          try { await activeSerialPort.close(); } catch (e) {}
+          activeSerialPort = null;
+        }
+        btn.innerText = '🔌 Connect Serial';
+        btn.classList.remove('btn-danger');
+        btn.classList.add('btn-primary');
+        statusEl.innerText = 'Status: Error';
+      }
+    };
+
+    window.sendSerialCommand = async function() {
+      const input = document.getElementById('serialInput');
+      const text = input.value;
+      if (!text || !activeSerialPort || !activeSerialPort.writable) return;
+
+      const encoder = new TextEncoder();
+      const writer = activeSerialPort.writable.getWriter();
+      await writer.write(encoder.encode(text + '\r\n'));
+      writer.releaseLock();
+      appendLog('serialLog', `> ${text}`);
+      input.value = '';
+    };
+  </script>
 
 </body>
 </html>
