@@ -17,7 +17,8 @@ An open-source, web-controlled 802.11 beacon frame broadcaster for ESP32. Broadc
 </div>
 
 ### Included Web Tools:
-* ⚡ **1-Click Firmware Flasher**: Instantly flashes the Spammer V2 firmware with progress bar.
+* ⚡ **1-Click Spammer V2 Flasher**: Instantly flashes the Spammer V2 firmware with progress bar.
+* 📁 **Flash Any Custom .bin**: Drag & drop ANY compiled `.bin` firmware file (Arduino sketches, Marauder, WLED, MicroPython) and flash it to any memory address (`0x0`, `0x10000`, etc.) at speeds up to 921,600 baud!
 * 🗑️ **Factory Erase Flash Tool**: 1-click full chip memory wipe to factory blank (`0xFF`).
 * 📟 **Live Web Serial Monitor**: Stream real-time serial logs, view boot output, and send serial commands.
 * 🔍 **Chip Diagnostics & Inspector**: Real-time hardware detection of chip model, revision, MAC address, and flash ID.
