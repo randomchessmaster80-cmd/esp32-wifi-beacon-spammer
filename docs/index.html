@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ESP32 Web Tools & Spammer Suite | 1-Click Flasher, Custom .bin, Erase & Serial Monitor</title>
-  <meta name="description" content="All-in-one web toolbox for ESP32. 1-click Spammer flasher, custom .bin flasher with drag-and-drop, full chip eraser, live serial monitor, and hardware inspector.">
+  <title>ESP32 WiFi Beacon Spammer | Web Flasher & Tools</title>
+  <meta name="description" content="All-in-one web toolbox for ESP32. 1-click Spammer flasher, full chip eraser, live serial monitor, and hardware inspector.">
   <script type="module" src="https://unpkg.com/esp-web-tools@10/dist/web/install-button.js?module"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -551,13 +551,12 @@
         <span class="badge">📡 Spammer V2.0</span>
       </div>
       <h1>ESP32 Web Tools & Spammer</h1>
-      <p class="subtitle">Complete in-browser toolbox: 1-click firmware installer, custom .bin flasher, full chip eraser, live serial monitor, and hardware inspector.</p>
+      <p class="subtitle">Complete in-browser toolbox: 1-click firmware installer, full chip eraser, live serial monitor, and hardware inspector.</p>
     </header>
 
     <!-- Navigation Tabs -->
     <nav class="nav-tabs">
       <button class="nav-tab active" onclick="switchTab('flasher')">⚡ Flash Spammer</button>
-      <button class="nav-tab" onclick="switchTab('custom')">📁 Flash Custom .bin</button>
       <button class="nav-tab" onclick="switchTab('eraser')">🗑️ Erase Flash</button>
       <button class="nav-tab" onclick="switchTab('terminal')">📟 Serial Monitor</button>
       <button class="nav-tab" onclick="switchTab('diag')">🔍 Chip Inspector</button>
@@ -615,92 +614,6 @@
       </div>
     </div>
 
-    <!-- 2. Custom .bin Flasher Tool -->
-    <div id="custom" class="tool-panel">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">📁 Flash Any Custom Firmware (.bin)</div>
-          <p class="card-desc">Select or drag & drop ANY compiled firmware file (.bin) from your computer and flash it directly to your ESP32 with custom offsets.</p>
-        </div>
-
-        <!-- Dropzone -->
-        <div id="dropzone" class="dropzone" onclick="document.getElementById('customFileInput').click()">
-          <input type="file" id="customFileInput" accept=".bin" style="display: none;" onchange="handleFileSelect(event)">
-          <div style="font-size: 2.2rem; margin-bottom: 0.5rem;">📥</div>
-          <div id="dropzoneMainText" style="font-weight: 600; color: #fff; margin-bottom: 0.25rem;">
-            Click to select or drag & drop a .bin file
-          </div>
-          <div id="dropzoneSubText" style="font-size: 0.85rem; color: var(--text-muted);">
-            Supports Arduino sketches, ESP-IDF binaries, Marauder, WLED, MicroPython, etc.
-          </div>
-          <div id="fileInfoBadge" style="display: none; margin-top: 0.75rem; background: rgba(0, 255, 204, 0.15); border: 1px solid var(--accent); color: var(--accent); padding: 0.35rem 0.85rem; border-radius: 20px; font-family: var(--font-mono); font-size: 0.85rem;">
-          </div>
-        </div>
-
-        <!-- Configuration Settings -->
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-top: 1.5rem;">
-          <div>
-            <label style="display: block; font-size: 0.8rem; font-family: var(--font-mono); color: var(--text-muted); margin-bottom: 0.4rem; text-transform: uppercase;">
-              Flash Offset (Memory Address)
-            </label>
-            <div style="display: flex; gap: 0.5rem;">
-              <select id="offsetPresetSelect" class="custom-select" style="flex: 1;" onchange="handleOffsetPresetChange(this.value)">
-                <option value="0x0" selected>0x0 (Full / Merged Binary)</option>
-                <option value="0x10000">0x10000 (App / Arduino Sketch)</option>
-                <option value="0x1000">0x1000 (Bootloader)</option>
-                <option value="0x8000">0x8000 (Partition Table)</option>
-                <option value="custom">Custom Hex Address...</option>
-              </select>
-              <input type="text" id="customOffsetInput" class="terminal-input" value="0x0" style="width: 100px; display: none; font-family: var(--font-mono); text-align: center;">
-            </div>
-          </div>
-
-          <div>
-            <label style="display: block; font-size: 0.8rem; font-family: var(--font-mono); color: var(--text-muted); margin-bottom: 0.4rem; text-transform: uppercase;">
-              Flashing Speed (Baud Rate)
-            </label>
-            <select id="customBaudSelect" class="custom-select" style="width: 100%;">
-              <option value="460800" selected>460800 Baud (Fast - Recommended)</option>
-              <option value="921600">921600 Baud (Hyper Speed - 5s)</option>
-              <option value="115200">115200 Baud (Safe & Stable)</option>
-            </select>
-          </div>
-        </div>
-
-        <div style="margin-top: 1.25rem; display: flex; align-items: center; justify-content: center; gap: 1.5rem; flex-wrap: wrap;">
-          <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; cursor: pointer;">
-            <input type="checkbox" id="customEraseCheck"> Wipe entire flash memory before flashing
-          </label>
-        </div>
-
-        <!-- Flashing Action -->
-        <div style="text-align: center; margin: 1.75rem 0 1rem;">
-          <button id="startCustomFlashBtn" class="btn btn-primary" onclick="startCustomFlash()" disabled>
-            🚀 FLASH CUSTOM .BIN
-          </button>
-        </div>
-
-        <!-- Progress Bar -->
-        <div id="flashProgressContainer" style="display: none; margin: 1.5rem 0;">
-          <div style="display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 0.85rem; margin-bottom: 0.35rem;">
-            <span id="flashProgressStatus">Writing flash...</span>
-            <span id="flashProgressPct">0%</span>
-          </div>
-          <div style="background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); border-radius: 999px; height: 12px; overflow: hidden;">
-            <div id="flashProgressBar" style="width: 0%; height: 100%; background: linear-gradient(90deg, #00ffcc, #00b4d8); transition: width 0.1s linear; box-shadow: 0 0 12px var(--accent);"></div>
-          </div>
-        </div>
-
-        <!-- Terminal Output -->
-        <div class="terminal-container">
-          <div class="terminal-topbar">
-            <span>Flashing Output</span>
-            <button class="btn btn-secondary" style="font-size: 0.75rem; padding: 0.2rem 0.6rem;" onclick="clearTerminal('customFlashLog')">Clear</button>
-          </div>
-          <div id="customFlashLog" class="terminal-body">Select a .bin file above to get started...</div>
-        </div>
-      </div>
-    </div>
 
     <!-- 3. Erase Tool -->
     <div id="eraser" class="tool-panel">
@@ -903,162 +816,6 @@
       el.innerText += text + '\n';
       el.scrollTop = el.scrollHeight;
     }
-
-    // --- Custom .bin File Handling ---
-    let selectedCustomFile = null;
-
-    window.handleFileSelect = function(e) {
-      const file = e.target.files?.[0];
-      if (file) setCustomFile(file);
-    };
-
-    function setCustomFile(file) {
-      if (!file.name.toLowerCase().endsWith('.bin')) {
-        alert('Please select a valid .bin firmware file!');
-        return;
-      }
-      selectedCustomFile = file;
-      const badge = document.getElementById('fileInfoBadge');
-      const sizeMb = (file.size / (1024 * 1024)).toFixed(2);
-      const sizeKb = (file.size / 1024).toFixed(1);
-      badge.innerText = `📄 ${file.name} (${file.size > 1048576 ? sizeMb + ' MB' : sizeKb + ' KB'})`;
-      badge.style.display = 'inline-block';
-      document.getElementById('dropzoneMainText').innerText = 'Selected: ' + file.name;
-      document.getElementById('startCustomFlashBtn').disabled = false;
-      appendLog('customFlashLog', `📂 Loaded file: ${file.name} (${file.size} bytes)`);
-    }
-
-    // Drag and drop listeners
-    const dropzone = document.getElementById('dropzone');
-    if (dropzone) {
-      ['dragenter', 'dragover'].forEach(name => {
-        dropzone.addEventListener(name, (e) => {
-          e.preventDefault();
-          dropzone.classList.add('dragover');
-        }, false);
-      });
-
-      ['dragleave', 'drop'].forEach(name => {
-        dropzone.addEventListener(name, (e) => {
-          e.preventDefault();
-          dropzone.classList.remove('dragover');
-        }, false);
-      });
-
-      dropzone.addEventListener('drop', (e) => {
-        const dt = e.dataTransfer;
-        const file = dt?.files?.[0];
-        if (file) setCustomFile(file);
-      }, false);
-    }
-
-    window.handleOffsetPresetChange = function(val) {
-      const customInput = document.getElementById('customOffsetInput');
-      if (val === 'custom') {
-        customInput.style.display = 'block';
-        customInput.value = '0x0';
-        customInput.focus();
-      } else {
-        customInput.style.display = 'none';
-        customInput.value = val;
-      }
-    };
-
-    // Custom .bin Flasher
-    window.startCustomFlash = async function() {
-      if (!selectedCustomFile) {
-        alert('Please select a .bin file first!');
-        return;
-      }
-
-      const logId = 'customFlashLog';
-      const btn = document.getElementById('startCustomFlashBtn');
-      clearTerminal(logId);
-
-      if (!('serial' in navigator)) {
-        appendLog(logId, '❌ ERROR: Web Serial is not supported in this browser. Please use Chrome, Edge, or Brave.');
-        return;
-      }
-
-      const offsetStr = document.getElementById('customOffsetInput').value.trim();
-      const offset = parseInt(offsetStr, 16);
-      if (isNaN(offset)) {
-        appendLog(logId, `❌ Invalid offset address: "${offsetStr}". Must be hex like 0x0 or 0x10000.`);
-        return;
-      }
-
-      const baudRate = parseInt(document.getElementById('customBaudSelect').value, 10);
-      const shouldErase = document.getElementById('customEraseCheck').checked;
-
-      btn.disabled = true;
-      document.getElementById('flashProgressContainer').style.display = 'block';
-      document.getElementById('flashProgressBar').style.width = '0%';
-      document.getElementById('flashProgressPct').innerText = '0%';
-      document.getElementById('flashProgressStatus').innerText = 'Connecting...';
-
-      appendLog(logId, `📂 Reading file: ${selectedCustomFile.name}...`);
-      const arrayBuffer = await selectedCustomFile.arrayBuffer();
-      const fileData = new Uint8Array(arrayBuffer);
-      appendLog(logId, `✅ File ready (${fileData.length} bytes). Target offset: 0x${offset.toString(16).toUpperCase()}`);
-      appendLog(logId, '🔌 Requesting serial port. Please select your ESP32 in the browser popup...');
-
-      let transport = null;
-      try {
-        const port = await navigator.serial.requestPort();
-        appendLog(logId, '✅ Port selected! Connecting to ESP32 bootloader...');
-
-        transport = new Transport(port, true);
-        const esploader = new ESPLoader({
-          transport: transport,
-          baudrate: baudRate,
-          terminal: {
-            clean() { clearTerminal(logId); },
-            writeLine(line) { appendLog(logId, line); },
-            write(text) { appendLog(logId, text); }
-          }
-        });
-
-        const chipName = await esploader.main();
-        appendLog(logId, `⚡ Detected Chip: ${chipName}`);
-        document.getElementById('flashProgressStatus').innerText = 'Writing Flash...';
-
-        if (shouldErase) {
-          appendLog(logId, '🗑️ Erasing entire flash before writing...');
-          await esploader.eraseFlash();
-          appendLog(logId, '✅ Erase complete. Proceeding to flash...');
-        }
-
-        const startTime = Date.now();
-        await esploader.writeFlash({
-          fileArray: [{ data: fileData, address: offset }],
-          flashSize: 'keep',
-          eraseAll: false,
-          compress: true,
-          reportProgress: (fileIndex, written, total) => {
-            const pct = Math.floor((written / total) * 100);
-            document.getElementById('flashProgressBar').style.width = pct + '%';
-            const elapsedSec = ((Date.now() - startTime) / 1000) || 0.1;
-            const kbSec = ((written / 1024) / elapsedSec).toFixed(1);
-            document.getElementById('flashProgressPct').innerText = `${pct}% (${(written / 1024).toFixed(0)} KB / ${(total / 1024).toFixed(0)} KB @ ${kbSec} KB/s)`;
-          }
-        });
-
-        document.getElementById('flashProgressStatus').innerText = 'Complete!';
-        document.getElementById('flashProgressBar').style.width = '100%';
-        appendLog(logId, '✨ ========================================');
-        appendLog(logId, '✅ FLASHING COMPLETED SUCCESSFULLY!');
-        appendLog(logId, `Wrote ${fileData.length} bytes to 0x${offset.toString(16).toUpperCase()} at ${baudRate} baud.`);
-        appendLog(logId, '✨ ========================================');
-      } catch (err) {
-        document.getElementById('flashProgressStatus').innerText = 'Failed';
-        appendLog(logId, `❌ Flashing error: ${err.message || err}`);
-      } finally {
-        if (transport) {
-          try { await transport.disconnect(); } catch (e) {}
-        }
-        btn.disabled = false;
-      }
-    };
 
     // --- Full Erase Flash Tool ---
     window.startEraseFlash = async function() {
